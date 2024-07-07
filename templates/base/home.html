@@ -2,5 +2,15 @@
 
 {% block content %}
   
-<h1>Hi THis is home page</h1>
+<h1>Hi This is home page</h1>
+<a href="{% url 'create-room' %}">Create Room</a>
+<br/>
+
+{% for room in rooms %}
+  <a href="{% url 'update-room' room.id %}">Edit</a>
+  <a href="{% url 'delete-room' room.id %}">Delete</a>
+  <a href="{% url 'room' room.id %}">{{room.name}}</a>
+  <br/>
+
+{% endfor %}
 {% endblock %}
