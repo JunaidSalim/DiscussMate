@@ -1,16 +1,43 @@
 {% extends "main.html" %}
 
 {% block content %}
-  
-<h1>Hi This is home page</h1>
-<a href="{% url 'create-room' %}">Create Room</a>
-<br/>
 
-{% for room in rooms %}
-  <a href="{% url 'update-room' room.id %}">Edit</a>
-  <a href="{% url 'delete-room' room.id %}">Delete</a>
-  <a href="{% url 'room' room.id %}">{{room.name}}</a>
-  <br/>
+<style>
+  .home-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+  }
+</style>
 
-{% endfor %}
+<div class="home-container">
+  <div>
+    <h2>Browse Topics</h2>
+    <hr />
+    <div>
+      <a href="{% url 'home' %}">All</a>
+    </div>
+    {% for topic in topics %}
+    <div>
+      <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+    </div>
+    {% endfor %}
+  </div>
+  <div>
+    <h5>{{room_count}} Rooms Available</h5>
+    <div>
+      <a href="{% url 'create-room' %}">Create Room</a>
+      <br />
+    </div>
+    {% for room in rooms %}
+    <div>
+      {% if request.user == room.host %}
+      <a href="{% url 'update-room' room.id %}">Edit</a>
+      <a href="{% url 'delete-room' room.id %}">Delete</a>
+      {% endif %}
+      <a href="{% url 'room' room.id %}">{{room.name}}</a>
+      <br />
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}
