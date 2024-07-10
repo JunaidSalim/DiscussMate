@@ -144,11 +144,7 @@ def logoutPage(request):
     return redirect('home')
 
 def userProfile(request,pk):
-    user = User.objects.get(id=pk)
-    if user != request.user:
-        messages.error(request,'Access Denied')
-        return redirect('home')
-    
+    user = User.objects.get(id=pk)    
     rooms = user.room_set.all()
     room_messages = user.message_set.all()
     topics = Topic.objects.all()
