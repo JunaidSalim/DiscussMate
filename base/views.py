@@ -6,7 +6,7 @@ from .models import *
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from .forms import RoomForm
+from .forms import RoomForm,userForm
 
 # Create your views here.
 def home(request):
@@ -166,3 +166,17 @@ def userProfile(request,pk):
         'topics':topics,
     }
     return render(request,'base/profile.html',context)
+
+@login_required(login_url='login')
+def updateUser(request):
+    user = request.user
+    form = userForm(instance=user)
+    if request.method == "POST":
+        form = userForm(request.POST,instance = user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile',pk=user.id)
+    context = {
+        'form':form
+    }
+    return render(request,'base/update-user.html',context)
