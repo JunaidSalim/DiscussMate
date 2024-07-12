@@ -7,11 +7,12 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RoomForm,userForm
+from django.db.models import Count
 
 # Create your views here.
 def home(request):
     q = request.GET.get('q') if request.GET.get('q')!=None else ''
-    topics = Topic.objects.all()
+    topics = Topic.objects.annotate(room_count=Count('room')).order_by('-room_count')
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(description__icontains=q) | Q(name__icontains=q))
     room_count = rooms.count()
     room_messages = Message.objects.all().filter(Q(room__topic__name__icontains = q))
@@ -180,3 +181,18 @@ def updateUser(request):
         'form':form
     }
     return render(request,'base/update-user.html',context)
+
+def topicsPage(request):
+    q = request.GET.get('q') if request.GET.get('q')!=None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    context = {
+        'topics':topics,
+    }
+    return render(request,'base/topics.html',context)
+
+def activityPage(request):
+    room_messages = Message.objects.all().order_by('-created','-updated')
+    context = {
+        'room_messages': room_messages
+    }
+    return render(request,'base/activity.html',context)
