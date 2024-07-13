@@ -1,12 +1,10 @@
 from django.shortcuts import render,redirect
 from django.db.models import Q
-from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import *
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from .forms import RoomForm,userForm
+from .forms import RoomForm,userForm,CustomUserCreationForm
 from django.db.models import Count
 
 # Create your views here.
@@ -131,9 +129,9 @@ def loginPage(request):
     return render(request,'base/login_register.html',context)
 
 def registerPage(request):
-    form = UserCreationForm()
+    form = CustomUserCreationForm()
     if request.method=="POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -173,7 +171,7 @@ def updateUser(request):
     user = request.user
     form = userForm(instance=user)
     if request.method == "POST":
-        form = userForm(request.POST,instance = user)
+        form = userForm(request.POST,request.FILES,instance = user)
         if form.is_valid():
             form.save()
             return redirect('profile',pk=user.id)
