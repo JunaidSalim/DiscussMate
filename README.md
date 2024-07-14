@@ -47,6 +47,6 @@
 │ ├── topics.html
 │ ├── topics_component.html
 │ └── update-user.html
-└── main.html
+├── main.html
 └── navbar.html
 ```
