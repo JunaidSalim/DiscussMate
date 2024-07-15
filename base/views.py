@@ -140,8 +140,9 @@ def registerPage(request):
             messages.info(request,'User has been registered!')
             return redirect('home')
         else:
-            messages.error(request,'Error Occurred During Registration')
-            return redirect('')
+            for error in list(form.errors.values()):
+                messages.error(request,error)
+            return redirect('register')
     context = {
         "form":form}
     return render(request,'base/login_register.html',context)
